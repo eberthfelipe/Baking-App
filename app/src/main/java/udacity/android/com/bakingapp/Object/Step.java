@@ -1,12 +1,21 @@
 package udacity.android.com.bakingapp.Object;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
+
 // Step of Recipe
 public class Step {
 
+    @JsonProperty(BakingJsonUtils.JSON_STEPS_ID)
     private int id;
+    @JsonProperty(BakingJsonUtils.JSON_STEPS_SHORT_DESCRIPTION)
     private String short_description;
+    @JsonProperty(BakingJsonUtils.JSON_STEPS_DESCRIPTION)
     private String description;
+    @JsonProperty(BakingJsonUtils.JSON_STEPS_VIDEO_URL)
     private String video_url;
+    @JsonProperty(BakingJsonUtils.JSON_STEPS_THUMBNAIL_URL)
     private String thumbnail_url;
 
     public Step() {

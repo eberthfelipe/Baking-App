@@ -1,10 +1,17 @@
 package udacity.android.com.bakingapp.Object;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
+
 // Ingredient of Recipe
 public class Ingredient {
 
+    @JsonProperty(BakingJsonUtils.JSON_INGREDIENTS_QUANTITY)
     private int quantity;
+    @JsonProperty(BakingJsonUtils.JSON_INGREDIENTS_MEASURE)
     private  String measure;
+    @JsonProperty(BakingJsonUtils.JSON_INGREDIENTS_INGREDIENT)
     private  String ingredient;
 
     public Ingredient() {
