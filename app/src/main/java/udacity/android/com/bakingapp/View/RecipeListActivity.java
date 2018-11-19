@@ -1,23 +1,29 @@
 package udacity.android.com.bakingapp.View;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import udacity.android.com.bakingapp.R;
-import udacity.android.com.bakingapp.dummy.DummyContent;
+import android.widget.Toast;
 
 import java.util.List;
+
+import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
+import udacity.android.com.bakingapp.R;
+import udacity.android.com.bakingapp.dummy.DummyContent;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -34,6 +40,9 @@ public class RecipeListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    private final int MY_PERMISSIONS_INTERNET = 0;
+    private RecipeListPresenterImpl mRecipeListPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,23 @@ public class RecipeListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+        mRecipeListPresenter = new RecipeListPresenterImpl();
+        getRecipes();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case MY_PERMISSIONS_INTERNET:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getRecipes();
+                } else {
+                    //DONE: show a message to user instead of close the app
+                    Toast.makeText(this, R.string.permissions, Toast.LENGTH_LONG).show();
+                }
+
+        }
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -137,6 +163,14 @@ public class RecipeListActivity extends AppCompatActivity {
                 mIdView = view.findViewById(R.id.id_text);
                 mContentView = view.findViewById(R.id.content);
             }
+        }
+    }
+
+    public void getRecipes(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
+            mRecipeListPresenter.retrieveRecipesFromServer(this);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, MY_PERMISSIONS_INTERNET);
         }
     }
 }
