@@ -19,8 +19,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import udacity.android.com.bakingapp.Object.Recipe;
 import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.dummy.DummyContent;
@@ -33,7 +35,7 @@ import udacity.android.com.bakingapp.dummy.DummyContent;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -74,7 +76,7 @@ public class RecipeListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
-        mRecipeListPresenter = new RecipeListPresenterImpl();
+        mRecipeListPresenter = new RecipeListPresenterImpl(this);
         getRecipes();
     }
 
@@ -170,4 +172,15 @@ public class RecipeListActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, MY_PERMISSIONS_INTERNET);
         }
     }
+
+    //region RecipeView Interface
+
+    @Override
+    public void parseRecipes(ArrayList<Recipe> recipes) {
+        // TODO: show recipes title in card view
+        Toast.makeText(this, "recipes in UI", Toast.LENGTH_SHORT).show();
+
+    }
+
+    //endregion
 }

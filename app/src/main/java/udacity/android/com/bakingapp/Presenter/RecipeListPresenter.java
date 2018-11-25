@@ -8,5 +8,6 @@ import udacity.android.com.bakingapp.Object.Recipe;
 
 public interface RecipeListPresenter {
 
-    ArrayList<Recipe> retrieveRecipesFromServer(Context context);
+    void retrieveRecipesFromServer(Context context);
+    void parseRecipes(ArrayList<Recipe> recipes);
 }

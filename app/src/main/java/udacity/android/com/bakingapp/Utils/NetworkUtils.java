@@ -6,10 +6,13 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import udacity.android.com.bakingapp.Object.Recipe;
+import udacity.android.com.bakingapp.Presenter.RecipeListPresenter;
 
 public class NetworkUtils {
 
@@ -39,16 +42,14 @@ public class NetworkUtils {
      * Method to get the return of recipes requested to server
      * @return recipeCallback
      */
-    public static Callback<Recipe []> retrieveRecipes() {
+    public static Callback<Recipe []> retrieveRecipes(final RecipeListPresenter recipeListPresenter) {
         Callback<Recipe []> recipeCallback = new Callback<Recipe[]>() {
             @Override
             public void onResponse(@NonNull Call<Recipe[]> call, Response<Recipe[]> response) {
                 Recipe[] recipe = response.body();
                 Log.d(TAG, "onResponse: " + response.toString());
                 assert recipe != null;
-                for (Recipe recipeAux: recipe) {
-                    Log.d(TAG, "RECIPE: " + recipeAux.toString());
-                }
+                parseRecipes(recipeListPresenter, recipe);
             }
 
             @Override
@@ -59,5 +60,14 @@ public class NetworkUtils {
         };
         Log.d(TAG, "retrieveRecipes: " + recipeCallback.toString());
         return recipeCallback;
+    }
+
+    private static void parseRecipes(RecipeListPresenter recipeListPresenter, Recipe recipe[]){
+        ArrayList<Recipe> recipesArrayList = new ArrayList<>();
+        for (Recipe recipeAux: recipe) {
+            Log.d(TAG, "RECIPE: " + recipeAux.toString());
+            recipesArrayList.add(recipeAux);
+        }
+        recipeListPresenter.parseRecipes(recipesArrayList);
     }
 }
