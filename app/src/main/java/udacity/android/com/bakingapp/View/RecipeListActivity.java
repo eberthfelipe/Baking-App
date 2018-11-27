@@ -16,11 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import udacity.android.com.bakingapp.Object.Recipe;
 import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
@@ -42,7 +42,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
      * device.
      */
     private boolean mTwoPane;
-
+    private RecyclerView mRecyclerView;
+    private LinearLayout mLoadingView;
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
 
@@ -72,9 +73,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.recipe_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        //TODO: Replace findViewById for dataBinding
+        mRecyclerView = findViewById(R.id.recipe_list);
+        mLoadingView = findViewById(R.id.ll_loading_recipes);
+        assert mRecyclerView != null && mLoadingView != null;
+        showProgress(true);
+//        setupRecyclerView((RecyclerView) recyclerView);
 
         mRecipeListPresenter = new RecipeListPresenterImpl(this);
         getRecipes();
@@ -94,19 +98,22 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, ArrayList<Recipe> recipes) {
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, recipes, mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final RecipeListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final ArrayList<Recipe> mRecipeValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: replace on click in DummyItem, fatal exception
+//                java.lang.ClassCastException: udacity.android.com.bakingapp.Object.Recipe cannot be cast to udacity.android.com.bakingapp.dummy.DummyContent$DummyItem
+//                at udacity.android.com.bakingapp.View.RecipeListActivity$SimpleItemRecyclerViewAdapter$1.onClick(RecipeListActivity.java:116)
                 DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
@@ -127,9 +134,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         };
 
         SimpleItemRecyclerViewAdapter(RecipeListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      ArrayList<Recipe> recipeItems,
                                       boolean twoPane) {
-            mValues = items;
+            mRecipeValues = recipeItems;
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
@@ -144,15 +151,14 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            holder.mRecipeTitle.setText(mValues.get(position).content);
-
-            holder.itemView.setTag(mValues.get(position));
+            holder.mRecipeTitle.setText(mRecipeValues.get(position).getName());
+            holder.itemView.setTag(mRecipeValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return mRecipeValues.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -165,6 +171,15 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
     }
 
+    public void showProgress(boolean show){
+        if(show){
+            mRecyclerView.setVisibility(View.GONE);
+            mLoadingView.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mLoadingView.setVisibility(View.GONE);
+        }
+    }
     public void getRecipes(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
             mRecipeListPresenter.retrieveRecipesFromServer(this);
@@ -177,9 +192,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
     @Override
     public void parseRecipes(ArrayList<Recipe> recipes) {
-        // TODO: show recipes title in card view
-        Toast.makeText(this, "recipes in UI", Toast.LENGTH_SHORT).show();
-
+        setupRecyclerView(mRecyclerView, recipes);
+        showProgress(false);
     }
 
     //endregion
