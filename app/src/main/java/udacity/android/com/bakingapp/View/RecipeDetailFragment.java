@@ -54,6 +54,9 @@ public class RecipeDetailFragment extends Fragment {
                 appBarLayout = activity.findViewById(R.id.toolbar_layout);
             }
             if (appBarLayout != null) {
+                //TODO: remove DummyContent from project
+//                Caused by: java.lang.NullPointerException: Attempt to read from field 'java.lang.String udacity.android.com.bakingapp.dummy.DummyContent$DummyItem.content' on a null object reference
+//                at udacity.android.com.bakingapp.View.RecipeDetailFragment.onCreate(RecipeDetailFragment.java:57)
                 appBarLayout.setTitle(mItem.content);
             }
         }

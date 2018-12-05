@@ -15,11 +15,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,8 +28,6 @@ import udacity.android.com.bakingapp.Object.Recipe;
 import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
-import udacity.android.com.bakingapp.databinding.RecipeListBinding;
-import udacity.android.com.bakingapp.dummy.DummyContent;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -46,6 +43,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+    private static final String TAG = RecipeListActivity.class.getName();
     private boolean mTwoPane;
     private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
@@ -112,13 +110,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: replace on click in DummyItem, fatal exception
-//                java.lang.ClassCastException: udacity.android.com.bakingapp.Object.Recipe cannot be cast to udacity.android.com.bakingapp.dummy.DummyContent$DummyItem
-//                at udacity.android.com.bakingapp.View.RecipeListActivity$SimpleItemRecyclerViewAdapter$1.onClick(RecipeListActivity.java:116)
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                int position = (int) view.getTag();
+                Recipe recipe = mRecipeValues.get(position);
+                Log.d(TAG, "onClick Recipe: " + recipe.toString());
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putInt(RecipeDetailFragment.ARG_ITEM_ID, recipe.getId());
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -127,7 +124,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, recipe.getId());
 
                     context.startActivity(intent);
                 }
@@ -155,7 +152,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             holder.bind(mRecipeValues.get(position).getName());
-            holder.itemView.setTag(mRecipeValues.get(position));
+            holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
@@ -172,7 +169,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
                 this.viewDataBinding = viewDataBinding;
             }
 
-            public void bind(String recipeName){
+            private void bind(String recipeName){
                 viewDataBinding.setVariable(BR.recipeName, recipeName);
                 viewDataBinding.executePendingBindings();
             }
