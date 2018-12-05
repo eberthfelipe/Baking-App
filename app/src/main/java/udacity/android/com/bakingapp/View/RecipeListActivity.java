@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -22,9 +24,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import udacity.android.com.bakingapp.BR;
 import udacity.android.com.bakingapp.Object.Recipe;
 import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.R;
+import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
+import udacity.android.com.bakingapp.databinding.RecipeListBinding;
 import udacity.android.com.bakingapp.dummy.DummyContent;
 
 /**
@@ -42,21 +47,20 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
      * device.
      */
     private boolean mTwoPane;
-    private RecyclerView mRecyclerView;
-    private LinearLayout mLoadingView;
+    private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_list);
+        mActivityRecipeListBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = mActivityRecipeListBinding.toolbar;
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = mActivityRecipeListBinding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +69,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
             }
         });
 
+        //TODO: Replace findViewById for dataBinding
         if (findViewById(R.id.recipe_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -73,10 +78,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
             mTwoPane = true;
         }
 
-        //TODO: Replace findViewById for dataBinding
-        mRecyclerView = findViewById(R.id.recipe_list);
-        mLoadingView = findViewById(R.id.ll_loading_recipes);
-        assert mRecyclerView != null && mLoadingView != null;
         showProgress(true);
 //        setupRecyclerView((RecyclerView) recyclerView);
 
@@ -144,14 +145,16 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recipe_list_content, parent, false);
-            return new ViewHolder(view);
+//            View view = LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.recipe_list_content, parent, false);
+            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+            ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.recipe_list_content, parent, false);
+            return new ViewHolder(viewDataBinding);
         }
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            holder.mRecipeTitle.setText(mRecipeValues.get(position).getName());
+            holder.bind(mRecipeValues.get(position).getName());
             holder.itemView.setTag(mRecipeValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -162,22 +165,31 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mRecipeTitle;
+            final ViewDataBinding viewDataBinding;
 
-            ViewHolder(View view) {
-                super(view);
-                mRecipeTitle = view.findViewById(R.id.tv_recipe_title);
+            ViewHolder(ViewDataBinding viewDataBinding) {
+                super(viewDataBinding.getRoot());
+                this.viewDataBinding = viewDataBinding;
+            }
+
+            public void bind(String recipeName){
+                viewDataBinding.setVariable(BR.recipeName, recipeName);
+                viewDataBinding.executePendingBindings();
             }
         }
     }
 
     public void showProgress(boolean show){
         if(show){
-            mRecyclerView.setVisibility(View.GONE);
-            mLoadingView.setVisibility(View.VISIBLE);
+            mActivityRecipeListBinding.recipeListIncluded.setShow(false);
+            mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(true);
+//            mRecyclerView.setVisibility(View.GONE);
+//            mLoadingView.setVisibility(View.VISIBLE);
         } else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mLoadingView.setVisibility(View.GONE);
+            mActivityRecipeListBinding.recipeListIncluded.setShow(true);
+            mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(false);
+//            mRecyclerView.setVisibility(View.VISIBLE);
+//            mLoadingView.setVisibility(View.GONE);
         }
     }
     public void getRecipes(){
@@ -192,7 +204,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
     @Override
     public void parseRecipes(ArrayList<Recipe> recipes) {
-        setupRecyclerView(mRecyclerView, recipes);
+        setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, recipes);
         showProgress(false);
     }
 

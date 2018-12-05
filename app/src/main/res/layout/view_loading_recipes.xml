@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/ll_loading_recipes">
-
-    <ProgressBar
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="show"
+            type="Boolean"
+            />
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        />
+        android:id="@+id/ll_loading_recipes"
+        android:visibility="@{show ? View.VISIBLE : View.GONE, default=visible}"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/loading_recipes"
-        android:layout_marginTop="@dimen/margin_default"
-        android:textSize="@dimen/recipes_title"
-        />
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/loading_recipes"
+            android:layout_marginTop="@dimen/margin_default"
+            android:textSize="@dimen/recipes_title"
+            />
+
+    </LinearLayout>
+</layout>
