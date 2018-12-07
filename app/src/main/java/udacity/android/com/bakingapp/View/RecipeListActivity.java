@@ -115,7 +115,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
                 Log.d(TAG, "onClick Recipe: " + recipe.toString());
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putInt(RecipeDetailFragment.ARG_ITEM_ID, recipe.getId());
+                    arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, recipe);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -124,7 +124,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, recipe.getId());
+                    intent.putExtra(RecipeDetailFragment.ARG_RECIPE, recipe);
 
                     context.startActivity(intent);
                 }

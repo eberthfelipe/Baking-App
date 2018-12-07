@@ -36,6 +36,15 @@ public class Recipe implements Parcelable {
         image = "";
     }
 
+    public Recipe(Recipe recipe) {
+        this.id = recipe.id;
+        this.name = recipe.name;
+        this.ingredients = recipe.ingredients;
+        this.steps = recipe.steps;
+        this.servings = recipe.servings;
+        this.image = recipe.image;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
