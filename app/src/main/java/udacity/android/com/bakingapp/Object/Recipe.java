@@ -1,5 +1,8 @@
 package udacity.android.com.bakingapp.Object;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -8,7 +11,7 @@ import java.util.List;
 
 import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
 
-public class Recipe {
+public class Recipe implements Parcelable {
 
     // Baking fields
     @JsonProperty(BakingJsonUtils.JSON_ID)
@@ -95,5 +98,44 @@ public class Recipe {
         this.image = image;
     }
 
+
+    //endregion
+
+    //region Parcelable Recipe
+    protected Recipe(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+        steps = in.createTypedArrayList(Step.CREATOR);
+        servings = in.readInt();
+        image = in.readString();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeTypedList(ingredients);
+        parcel.writeTypedList(steps);
+        parcel.writeInt(servings);
+        parcel.writeString(image);
+    }
     //endregion
 }

@@ -1,11 +1,14 @@
 package udacity.android.com.bakingapp.Object;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
 
 // Step of Recipe
-public class Step {
+public class Step implements Parcelable {
 
     @JsonProperty(BakingJsonUtils.JSON_STEPS_ID)
     private int id;
@@ -76,6 +79,42 @@ public class Step {
 
     public void setThumbnail_url(String thumbnail_url) {
         this.thumbnail_url = thumbnail_url;
+    }
+
+    //endregion
+
+    //region Parcelable Step
+    protected Step(Parcel in) {
+        id = in.readInt();
+        short_description = in.readString();
+        description = in.readString();
+        video_url = in.readString();
+        thumbnail_url = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Step> CREATOR = new Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel in) {
+            return new Step(in);
+        }
+
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(short_description);
+        parcel.writeString(description);
+        parcel.writeString(video_url);
+        parcel.writeString(thumbnail_url);
     }
     //endregion
 }
