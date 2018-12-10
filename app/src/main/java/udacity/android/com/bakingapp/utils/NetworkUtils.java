@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.Utils;
+package udacity.android.com.bakingapp.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import udacity.android.com.bakingapp.Object.Recipe;
-import udacity.android.com.bakingapp.Presenter.RecipeListPresenter;
+import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.presenter.RecipeListPresenter;
 
 public class NetworkUtils {
 

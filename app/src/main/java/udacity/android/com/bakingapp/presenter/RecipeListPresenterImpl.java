@@ -1,14 +1,14 @@
-package udacity.android.com.bakingapp.Presenter;
+package udacity.android.com.bakingapp.presenter;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
-import udacity.android.com.bakingapp.Model.RetrofitConfig;
-import udacity.android.com.bakingapp.Object.Recipe;
-import udacity.android.com.bakingapp.Utils.NetworkUtils;
-import udacity.android.com.bakingapp.View.RecipeView;
+import udacity.android.com.bakingapp.model.RetrofitConfig;
+import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.utils.NetworkUtils;
+import udacity.android.com.bakingapp.view.RecipeView;
 
 public class RecipeListPresenterImpl implements RecipeListPresenter {
 

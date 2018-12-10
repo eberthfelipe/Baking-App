@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.View;
+package udacity.android.com.bakingapp.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,7 +12,8 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-import udacity.android.com.bakingapp.Object.Recipe;
+import udacity.android.com.bakingapp.databinding.RecipeDetailBinding;
+import udacity.android.com.bakingapp.object.Recipe;
 import udacity.android.com.bakingapp.R;
 
 /**
@@ -32,6 +33,8 @@ public class RecipeDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private Recipe mRecipeItem;
+
+    private RecipeDetailBinding mRecipeDetailBinding;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

@@ -1,10 +1,10 @@
-package udacity.android.com.bakingapp.Presenter;
+package udacity.android.com.bakingapp.presenter;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 
-import udacity.android.com.bakingapp.Object.Recipe;
+import udacity.android.com.bakingapp.object.Recipe;
 
 public interface RecipeListPresenter {
 

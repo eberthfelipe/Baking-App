@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.Utils;
+package udacity.android.com.bakingapp.utils;
 
 /**
  * class helper to parse json objects trough Jackson

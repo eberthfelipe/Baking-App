@@ -10,7 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".View.RecipeListActivity">
+    tools:context=".view.RecipeListActivity">
 
     <!--
     This layout is a two-pane layout for the Recipes
@@ -27,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:context="udacity.android.com.bakingapp.View.RecipeListActivity"
+        tools:context="udacity.android.com.bakingapp.view.RecipeListActivity"
         tools:listitem="@layout/recipe_list_content" />
 
     <FrameLayout

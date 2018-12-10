@@ -1,8 +1,8 @@
-package udacity.android.com.bakingapp.Model;
+package udacity.android.com.bakingapp.model;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import udacity.android.com.bakingapp.Object.Recipe;
+import udacity.android.com.bakingapp.object.Recipe;
 
 public interface BakingService {
 

@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.View;
+package udacity.android.com.bakingapp.view;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,8 +24,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import udacity.android.com.bakingapp.BR;
-import udacity.android.com.bakingapp.Object.Recipe;
-import udacity.android.com.bakingapp.Presenter.RecipeListPresenterImpl;
+import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
 

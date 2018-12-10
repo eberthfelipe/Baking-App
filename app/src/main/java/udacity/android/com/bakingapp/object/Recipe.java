@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.Object;
+package udacity.android.com.bakingapp.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
+import udacity.android.com.bakingapp.utils.BakingJsonUtils;
 
 public class Recipe implements Parcelable {
 

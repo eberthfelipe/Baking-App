@@ -1,8 +1,8 @@
-package udacity.android.com.bakingapp.View;
+package udacity.android.com.bakingapp.view;
 
 import java.util.ArrayList;
 
-import udacity.android.com.bakingapp.Object.Recipe;
+import udacity.android.com.bakingapp.object.Recipe;
 
 public interface RecipeView {
 

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".View.RecipeListActivity"
+            android:name=".view.RecipeListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -23,13 +23,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.RecipeDetailActivity"
+            android:name=".view.RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
-            android:parentActivityName=".View.RecipeListActivity"
+            android:parentActivityName=".view.RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="udacity.android.com.bakingapp.View.RecipeListActivity" />
+                android:value="udacity.android.com.bakingapp.view.RecipeListActivity" />
         </activity>
     </application>
 

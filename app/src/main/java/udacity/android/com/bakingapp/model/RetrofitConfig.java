@@ -1,4 +1,4 @@
-package udacity.android.com.bakingapp.Model;
+package udacity.android.com.bakingapp.model;
 
 import android.util.Log;
 

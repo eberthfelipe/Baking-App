@@ -1,11 +1,11 @@
-package udacity.android.com.bakingapp.Object;
+package udacity.android.com.bakingapp.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import udacity.android.com.bakingapp.Utils.BakingJsonUtils;
+import udacity.android.com.bakingapp.utils.BakingJsonUtils;
 
 // Step of Recipe
 public class Step implements Parcelable {
