@@ -1,6 +1,7 @@
 package udacity.android.com.bakingapp.view;
 
 import android.app.Activity;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -8,13 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.Objects;
 
+import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.RecipeDetailBinding;
 import udacity.android.com.bakingapp.object.Recipe;
-import udacity.android.com.bakingapp.R;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -65,13 +65,13 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
+        mRecipeDetailBinding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail, container, false);
 
         // TODO: create recipe detail view
         if (mRecipeItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mRecipeItem.toString());
+            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.toString());
         }
 
-        return rootView;
+        return mRecipeDetailBinding.getRoot();
     }
 }

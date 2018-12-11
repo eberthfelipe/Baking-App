@@ -80,6 +80,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 //        setupRecyclerView((RecyclerView) recyclerView);
 
         mRecipeListPresenter = new RecipeListPresenterImpl(this);
+        //TODO: restore saved instance to get recipes only when necessary
         getRecipes();
     }
 
