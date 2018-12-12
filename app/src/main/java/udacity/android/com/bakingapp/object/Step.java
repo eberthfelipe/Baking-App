@@ -40,6 +40,10 @@ public class Step implements Parcelable {
                 '}';
     }
 
+    public boolean hasVideo(){
+        return !video_url.isEmpty();
+    }
+
     //region GET and SET
     public int getId() {
         return id;

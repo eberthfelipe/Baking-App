@@ -7,4 +7,5 @@
     <dimen name="recipe_title_size">80dp</dimen>
     <dimen name="recipes_title">22sp</dimen>
     <dimen name="margin_default">8dp</dimen>
+    <dimen name="exoplayer_height">250dp</dimen>
 </resources>
