@@ -14,15 +14,13 @@ import android.view.ViewGroup;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -50,8 +48,11 @@ public class RecipeDetailFragment extends Fragment {
 
     private Recipe mRecipeItem;
     private RecipeDetailBinding mRecipeDetailBinding;
-    private SimpleExoPlayer mPlayer;
     private int positionStep;
+    private SimpleExoPlayer mPlayer;
+    private int mPlayerCurrentWindow = 0;
+    private long mPlayerPosition = 0;
+    private boolean mPlayerWhenReady = true;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -84,10 +85,7 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(mPlayer != null){
-            mPlayer.release();
-            mPlayer = null;
-        }
+        releasePlayer();
     }
 
     @Override
@@ -97,7 +95,7 @@ public class RecipeDetailFragment extends Fragment {
 
         // TODO: improve recipe detail view
         if (mRecipeItem != null) {
-            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.toString());
+            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.getName());
             mRecipeDetailBinding.setRecipeStep(mRecipeItem.getSteps().get(positionStep));
             if(mRecipeDetailBinding.getRecipeStep().hasVideo()){
                 initializePlayer();
@@ -122,25 +120,32 @@ public class RecipeDetailFragment extends Fragment {
             //Initialize the player
             mPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
 
-            //TODO: check deprecated in lines 127 and 139
-            //Initialize simpleExoPlayerView
-            SimpleExoPlayerView simpleExoPlayerView = mRecipeDetailBinding.exoplayerRecipeDetail;
-            simpleExoPlayerView.setPlayer(mPlayer);
+            //Initialize exoPlayerView
+            PlayerView exoPlayerView = mRecipeDetailBinding.exoplayerRecipeDetail;
+            exoPlayerView.setPlayer(mPlayer);
 
             // Produces DataSource instances through which media data is loaded.
             DataSource.Factory dataSourceFactory =
-                    new DefaultDataSourceFactory(context, Util.getUserAgent(context, "CloudinaryExoplayer"));
-
-            // Produces Extractor instances for parsing the media data.
-            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+                    new DefaultDataSourceFactory(context, Util.getUserAgent(context, "BakingApp"));
 
             // This is the MediaSource representing the media to be played.
             Uri videoUri = Uri.parse(mRecipeDetailBinding.getRecipeStep().getVideo_url());
-            MediaSource videoSource = new ExtractorMediaSource(videoUri,
-                    dataSourceFactory, extractorsFactory, null, null);
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
 
             // Prepare the player with the source.
             mPlayer.prepare(videoSource);
+            mPlayer.seekTo(mPlayerCurrentWindow, mPlayerPosition);
+            mPlayer.setPlayWhenReady(mPlayerWhenReady);
+        }
+    }
+
+    private void releasePlayer(){
+        if(mPlayer != null){
+            mPlayerPosition = mPlayer.getCurrentPosition();
+            mPlayerCurrentWindow = mPlayer.getCurrentWindowIndex();
+            mPlayerWhenReady = mPlayer.getPlayWhenReady();
+            mPlayer.release();
+            mPlayer = null;
         }
     }
     //endregion
