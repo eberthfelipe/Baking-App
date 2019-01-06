@@ -181,13 +181,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         if(show){
             mActivityRecipeListBinding.recipeListIncluded.setShow(false);
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(true);
-//            mRecyclerView.setVisibility(View.GONE);
-//            mLoadingView.setVisibility(View.VISIBLE);
         } else {
             mActivityRecipeListBinding.recipeListIncluded.setShow(true);
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(false);
-//            mRecyclerView.setVisibility(View.VISIBLE);
-//            mLoadingView.setVisibility(View.GONE);
         }
     }
     public void getRecipes(){

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="ingredientName"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/cv_ingredient_list_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_ingredient_list_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{ingredientName}"
+            android:textSize="@dimen/ingredients_title"
+            android:textColor="@color/colorPrimary"
+            />
+
+    </LinearLayout>
+</layout>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,12 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.RecipeDetailBinding;
+import udacity.android.com.bakingapp.object.Ingredient;
 import udacity.android.com.bakingapp.object.Recipe;
 
 /**
@@ -95,8 +98,9 @@ public class RecipeDetailFragment extends Fragment {
 
         // TODO: improve recipe detail view
         if (mRecipeItem != null) {
-            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.getName());
+//            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.getName());
             mRecipeDetailBinding.setRecipeStep(mRecipeItem.getSteps().get(positionStep));
+            mRecipeDetailBinding.recipeIngredients.setAdapter(new RecipeDetailRecyclerView((ArrayList<Ingredient>) mRecipeItem.getIngredients()));
             if(mRecipeDetailBinding.getRecipeStep().hasVideo()){
                 initializePlayer();
             }

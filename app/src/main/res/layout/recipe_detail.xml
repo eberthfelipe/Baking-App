@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="android.view.View"/>
@@ -18,13 +19,25 @@
             style="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="@dimen/margin_default"
             android:textIsSelectable="true"
+            android:text="@string/ingredients"
             tools:context=".view.RecipeDetailFragment" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recipe_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/margin_default"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:context=".view.RecipeDetailActivity"
+            tools:listitem="@layout/recipe_list_detail_content"
+            />
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/exoplayer_recipe_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/margin_default"
             android:minHeight="@dimen/exoplayer_height"
             android:visibility="@{recipeStep.hasVideo() ? View.VISIBLE : View.GONE, default=visible}"
             />

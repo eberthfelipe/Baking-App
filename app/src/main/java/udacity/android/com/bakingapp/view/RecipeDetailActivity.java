@@ -17,7 +17,7 @@ import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity{
 
     private ActivityRecipeDetailBinding mActivityRecipeDetailBinding;
 

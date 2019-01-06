@@ -2,6 +2,7 @@ package udacity.android.com.bakingapp.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,6 +10,8 @@ import udacity.android.com.bakingapp.utils.BakingJsonUtils;
 
 // Ingredient of Recipe
 public class Ingredient implements Parcelable {
+
+    private static String TAG = Ingredient.class.getName();
 
     @JsonProperty(BakingJsonUtils.JSON_INGREDIENTS_QUANTITY)
     private int quantity;
@@ -25,11 +28,12 @@ public class Ingredient implements Parcelable {
 
     @Override
     public String toString() {
-        return "Ingredient{" +
+        Log.d(TAG, "Ingredient{" +
                 "quantity=" + quantity +
                 ", measure='" + measure + '\'' +
                 ", ingredient='" + ingredient + '\'' +
-                '}';
+                '}');
+        return quantity + "  " + measure + "  " + ingredient;
     }
 
     //region GET and SET
