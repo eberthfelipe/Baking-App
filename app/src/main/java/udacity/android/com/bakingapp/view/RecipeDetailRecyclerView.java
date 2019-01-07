@@ -25,7 +25,7 @@ public class RecipeDetailRecyclerView extends RecyclerView.Adapter<RecipeDetailR
     @Override
     public RecipeDetailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.recipe_list_detail_content, viewGroup, false);
+        ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.recipe_list_detail_ingredients_content, viewGroup, false);
         return new RecipeDetailViewHolder(viewDataBinding);
     }
 
