@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.RecipeDetailBinding;
 import udacity.android.com.bakingapp.object.Ingredient;
 import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.object.Step;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -100,7 +100,10 @@ public class RecipeDetailFragment extends Fragment {
         if (mRecipeItem != null) {
 //            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.getName());
             mRecipeDetailBinding.setRecipeStep(mRecipeItem.getSteps().get(positionStep));
-            mRecipeDetailBinding.recipeIngredients.setAdapter(new RecipeDetailRecyclerView((ArrayList<Ingredient>) mRecipeItem.getIngredients()));
+            // Send Ingredients to RecyclerView
+            mRecipeDetailBinding.recipeIngredients.setAdapter(new RecipeDetailIngredientRecyclerView((ArrayList<Ingredient>) mRecipeItem.getIngredients()));
+            // Send Steps to RecyclerView
+            mRecipeDetailBinding.recipeSteps.setAdapter(new RecipeDetailStepRecyclerView((ArrayList<Step>) mRecipeItem.getSteps()));
             if(mRecipeDetailBinding.getRecipeStep().hasVideo()){
                 initializePlayer();
             }

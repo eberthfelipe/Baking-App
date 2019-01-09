@@ -13,26 +13,26 @@ import udacity.android.com.bakingapp.BR;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.object.Ingredient;
 
-public class RecipeDetailRecyclerView extends RecyclerView.Adapter<RecipeDetailRecyclerView.RecipeDetailViewHolder> {
+public class RecipeDetailIngredientRecyclerView extends RecyclerView.Adapter<RecipeDetailIngredientRecyclerView.RecipeDetailIngredientAdapter> {
 
     private ArrayList<Ingredient> mIngredientValues;
 
-    public RecipeDetailRecyclerView(ArrayList<Ingredient> ingredients) {
+    public RecipeDetailIngredientRecyclerView(ArrayList<Ingredient> ingredients) {
         mIngredientValues = new ArrayList<>(ingredients);
     }
 
     @NonNull
     @Override
-    public RecipeDetailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecipeDetailIngredientAdapter onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.recipe_list_detail_ingredients_content, viewGroup, false);
-        return new RecipeDetailViewHolder(viewDataBinding);
+        return new RecipeDetailIngredientAdapter(viewDataBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeDetailViewHolder recipeDetailViewHolder, int position) {
-        recipeDetailViewHolder.bind(mIngredientValues.get(position).toString());
-        recipeDetailViewHolder.itemView.setTag(position);
+    public void onBindViewHolder(@NonNull RecipeDetailIngredientAdapter recipeDetailIngredientAdapter, int position) {
+        recipeDetailIngredientAdapter.bind(mIngredientValues.get(position).toString());
+        recipeDetailIngredientAdapter.itemView.setTag(position);
     }
 
     @Override
@@ -40,10 +40,10 @@ public class RecipeDetailRecyclerView extends RecyclerView.Adapter<RecipeDetailR
         return mIngredientValues.size();
     }
 
-    public static class RecipeDetailViewHolder extends RecyclerView.ViewHolder{
+    public static class RecipeDetailIngredientAdapter extends RecyclerView.ViewHolder{
         ViewDataBinding viewDataBinding;
 
-        public RecipeDetailViewHolder(ViewDataBinding viewDataBinding) {
+        public RecipeDetailIngredientAdapter(ViewDataBinding viewDataBinding) {
             super(viewDataBinding.getRoot());
             this.viewDataBinding = viewDataBinding;
         }
