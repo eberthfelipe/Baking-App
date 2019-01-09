@@ -44,6 +44,10 @@ public class Step implements Parcelable {
         return !video_url.isEmpty();
     }
 
+    public String getFormattedShortDescription(){
+        return (id+1) + ". " + short_description;
+    }
+
     //region GET and SET
     public int getId() {
         return id;

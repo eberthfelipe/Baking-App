@@ -42,7 +42,7 @@ public class RecipeDetailStepRecyclerView extends RecyclerView.Adapter<RecipeDet
 
     @Override
     public void onBindViewHolder(@NonNull RecipeDetailStepAdapter recipeDetailStepAdapter, int position) {
-        recipeDetailStepAdapter.bind(mStepValues.get(position).getShort_description());
+        recipeDetailStepAdapter.bind(mStepValues.get(position).getFormattedShortDescription());
         recipeDetailStepAdapter.itemView.setTag(position);
         recipeDetailStepAdapter.itemView.setOnClickListener(mOnClickListener);
     }
