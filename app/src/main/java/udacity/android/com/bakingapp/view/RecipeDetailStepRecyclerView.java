@@ -4,7 +4,9 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -15,7 +17,16 @@ import udacity.android.com.bakingapp.object.Step;
 
 public class RecipeDetailStepRecyclerView extends RecyclerView.Adapter<RecipeDetailStepRecyclerView.RecipeDetailStepAdapter>{
 
+    private static final String TAG = RecipeDetailStepRecyclerView.class.getName();
     private ArrayList<Step> mStepValues;
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int position = (int) view.getTag();
+            Step step = mStepValues.get(position);
+            Log.d(TAG, "onClick step: " + step.toString());
+        }
+    };
 
     public RecipeDetailStepRecyclerView(ArrayList<Step> steps) {
         mStepValues = new ArrayList<>(steps);
@@ -33,6 +44,7 @@ public class RecipeDetailStepRecyclerView extends RecyclerView.Adapter<RecipeDet
     public void onBindViewHolder(@NonNull RecipeDetailStepAdapter recipeDetailStepAdapter, int position) {
         recipeDetailStepAdapter.bind(mStepValues.get(position).getShort_description());
         recipeDetailStepAdapter.itemView.setTag(position);
+        recipeDetailStepAdapter.itemView.setOnClickListener(mOnClickListener);
     }
 
     @Override
