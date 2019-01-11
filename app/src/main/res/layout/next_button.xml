@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_next"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/img_btn_next"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerCrop"
+        android:src="@drawable/exo_icon_fastforward"
+        app:layout_constraintStart_toEndOf="@+id/tv_next_btn"
+        />
+
+    <TextView
+        android:id="@+id/tv_next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/next"
+        android:textStyle="bold"
+        android:textSize="@dimen/recipes_title"
+        android:textColor="@color/colorPrimary"
+        />
+
+</android.support.constraint.ConstraintLayout>
