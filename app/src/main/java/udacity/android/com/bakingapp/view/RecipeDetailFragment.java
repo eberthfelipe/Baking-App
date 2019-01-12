@@ -52,10 +52,6 @@ public class RecipeDetailFragment extends Fragment {
     private Recipe mRecipeItem;
     private RecipeDetailBinding mRecipeDetailBinding;
     private int positionStep;
-    private SimpleExoPlayer mPlayer;
-    private int mPlayerCurrentWindow = 0;
-    private long mPlayerPosition = 0;
-    private boolean mPlayerWhenReady = true;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -88,7 +84,6 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
     }
 
     @Override
@@ -96,64 +91,14 @@ public class RecipeDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         mRecipeDetailBinding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail, container, false);
 
-        // TODO: improve recipe detail view
         if (mRecipeItem != null) {
-//            mRecipeDetailBinding.recipeDetail.setText(mRecipeItem.getName());
-            mRecipeDetailBinding.setRecipeStep(mRecipeItem.getSteps().get(positionStep));
             // Send Ingredients to RecyclerView
             mRecipeDetailBinding.recipeIngredients.setAdapter(new RecipeDetailIngredientRecyclerView((ArrayList<Ingredient>) mRecipeItem.getIngredients()));
             // Send Steps to RecyclerView
-            mRecipeDetailBinding.recipeSteps.setAdapter(new RecipeDetailStepRecyclerView((ArrayList<Step>) mRecipeItem.getSteps()));
-            if(mRecipeDetailBinding.getRecipeStep().hasVideo()){
-                initializePlayer();
-            }
+            mRecipeDetailBinding.recipeSteps.setAdapter(new RecipeDetailStepRecyclerView((ArrayList<Step>) mRecipeItem.getSteps(), this.getActivity()));
         }
 
         return mRecipeDetailBinding.getRoot();
     }
 
-    //region ExoPlayer
-    private void initializePlayer(){
-        Context context = this.getContext();
-
-        if(context != null){
-            // Create a default TrackSelector
-            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            TrackSelection.Factory videoTrackSelectionFactory =
-                    new AdaptiveTrackSelection.Factory(bandwidthMeter);
-            TrackSelector trackSelector =
-                    new DefaultTrackSelector(videoTrackSelectionFactory);
-
-            //Initialize the player
-            mPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
-
-            //Initialize exoPlayerView
-            PlayerView exoPlayerView = mRecipeDetailBinding.exoplayerRecipeDetail;
-            exoPlayerView.setPlayer(mPlayer);
-
-            // Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory =
-                    new DefaultDataSourceFactory(context, Util.getUserAgent(context, "BakingApp"));
-
-            // This is the MediaSource representing the media to be played.
-            Uri videoUri = Uri.parse(mRecipeDetailBinding.getRecipeStep().getVideo_url());
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
-
-            // Prepare the player with the source.
-            mPlayer.prepare(videoSource);
-            mPlayer.seekTo(mPlayerCurrentWindow, mPlayerPosition);
-            mPlayer.setPlayWhenReady(mPlayerWhenReady);
-        }
-    }
-
-    private void releasePlayer(){
-        if(mPlayer != null){
-            mPlayerPosition = mPlayer.getCurrentPosition();
-            mPlayerCurrentWindow = mPlayer.getCurrentWindowIndex();
-            mPlayerWhenReady = mPlayer.getPlayWhenReady();
-            mPlayer.release();
-            mPlayer = null;
-        }
-    }
-    //endregion
 }

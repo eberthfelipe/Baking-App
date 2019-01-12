@@ -29,6 +29,14 @@ public class Step implements Parcelable {
         thumbnail_url = "";
     }
 
+    public Step(Step step) {
+        id = step.id;
+        short_description = step.short_description;
+        description = step.description;
+        video_url = step.video_url;
+        thumbnail_url = step.thumbnail_url;
+    }
+
     @Override
     public String toString() {
         return "Step{" +

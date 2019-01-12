@@ -1,5 +1,6 @@
 package udacity.android.com.bakingapp.view;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
@@ -19,17 +20,21 @@ public class RecipeDetailStepRecyclerView extends RecyclerView.Adapter<RecipeDet
 
     private static final String TAG = RecipeDetailStepRecyclerView.class.getName();
     private ArrayList<Step> mStepValues;
+    private StepClickListener mStepCallBack;
+
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             int position = (int) view.getTag();
             Step step = mStepValues.get(position);
             Log.d(TAG, "onClick step: " + step.toString());
+            mStepCallBack.onStepSelected(position);
         }
     };
 
-    public RecipeDetailStepRecyclerView(ArrayList<Step> steps) {
+    public RecipeDetailStepRecyclerView(ArrayList<Step> steps, Context context) {
         mStepValues = new ArrayList<>(steps);
+        mStepCallBack = (StepClickListener) context;
     }
 
     @NonNull

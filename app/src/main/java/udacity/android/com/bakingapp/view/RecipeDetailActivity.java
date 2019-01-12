@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
+import udacity.android.com.bakingapp.object.Recipe;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -17,9 +18,10 @@ import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity{
+public class RecipeDetailActivity extends AppCompatActivity implements StepClickListener {
 
     private ActivityRecipeDetailBinding mActivityRecipeDetailBinding;
+    private Recipe mCurrentRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,8 @@ public class RecipeDetailActivity extends AppCompatActivity{
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE,
-                    getIntent().getParcelableExtra(RecipeDetailFragment.ARG_RECIPE));
+            mCurrentRecipe = getIntent().getParcelableExtra(RecipeDetailFragment.ARG_RECIPE);
+            arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, mCurrentRecipe);
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -73,5 +75,17 @@ public class RecipeDetailActivity extends AppCompatActivity{
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStepSelected(int position) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(RecipeDetailStepFragment.ARG_STEP,mCurrentRecipe.getSteps().get(position));
+        arguments.putInt(RecipeDetailStepFragment.ARG_STEP_MAX,mCurrentRecipe.getSteps().size());
+        RecipeDetailStepFragment stepFragment = new RecipeDetailStepFragment();
+        stepFragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.recipe_detail_container, stepFragment)
+                .commit();
     }
 }
