@@ -71,7 +71,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, RecipeListActivity.class));
+            if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailFragment.class){
+                navigateUpTo(new Intent(this, RecipeListActivity.class));
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -86,6 +90,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
         stepFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.recipe_detail_container, stepFragment)
+                .addToBackStack(null)
                 .commit();
     }
 }
