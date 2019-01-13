@@ -47,6 +47,24 @@ public class RecipeDetailStepFragment extends Fragment {
     private int mPlayerCurrentWindow = 0;
     private long mPlayerPosition = 0;
     private boolean mPlayerWhenReady = true;
+    private StepNavigationClickListener mStepNavigationCallBack;
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.id_previous_button:
+                    Log.d(TAG, "PREVIOUS");
+                    mStepNavigationCallBack.onPreviousSelected(mStep.getId());
+                    break;
+                case R.id.id_next_button:
+                    Log.d(TAG, "NEXT");
+                    mStepNavigationCallBack.onNextSelected(mStep.getId());
+                    break;
+            }
+//            mStepCallBack.onStepSelected(position);
+        }
+    };
 
     public RecipeDetailStepFragment() {
     }
@@ -57,6 +75,7 @@ public class RecipeDetailStepFragment extends Fragment {
         if (hasValidArguments(getArguments())) {
             mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
             maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
+            mStepNavigationCallBack = (StepNavigationClickListener) getContext();
         }
     }
 
@@ -74,6 +93,9 @@ public class RecipeDetailStepFragment extends Fragment {
         if(mStep != null){
             Log.d(TAG, "onCreateView: " + mStep.toString());
             mRecipeDetailStepBinding.setStepDescription(mStep.getDescription());
+            mRecipeDetailStepBinding.idPreviousButton.setOnClickListener(mOnClickListener);
+            mRecipeDetailStepBinding.idNextButton.setOnClickListener(mOnClickListener);
+            validateNavigation();
             mRecipeDetailStepBinding.setHasVideo(mStep.hasVideo());
             if(mStep.hasVideo()){
                 initializePlayer();
@@ -86,6 +108,19 @@ public class RecipeDetailStepFragment extends Fragment {
         return args != null
                 && args.containsKey(ARG_STEP)
                 && args.containsKey(ARG_STEP_MAX);
+    }
+
+    public void validateNavigation(){
+        if(mStep.getId() == 0){
+            mRecipeDetailStepBinding.idPreviousButton.setEnabled(false);
+            mRecipeDetailStepBinding.idPreviousButton.setAlpha((float) 0.30);
+        } else if(mStep.getId() == maxPositionStep){
+            mRecipeDetailStepBinding.idNextButton.setEnabled(false);
+            mRecipeDetailStepBinding.idNextButton.setAlpha((float) 0.30);
+        } else {
+            mRecipeDetailStepBinding.idPreviousButton.setEnabled(true);
+            mRecipeDetailStepBinding.idNextButton.setEnabled(true);
+        }
     }
 
     //region ExoPlayer

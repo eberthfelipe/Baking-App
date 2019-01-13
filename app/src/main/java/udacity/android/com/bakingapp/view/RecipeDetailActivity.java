@@ -3,9 +3,11 @@ package udacity.android.com.bakingapp.view;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import udacity.android.com.bakingapp.R;
@@ -18,7 +20,7 @@ import udacity.android.com.bakingapp.object.Recipe;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity implements StepClickListener {
+public class RecipeDetailActivity extends AppCompatActivity implements StepClickListener, StepNavigationClickListener {
 
     private ActivityRecipeDetailBinding mActivityRecipeDetailBinding;
     private Recipe mCurrentRecipe;
@@ -62,6 +64,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
     }
 
     @Override
+    public void onBackPressed() {
+        handleBackStack();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -70,12 +77,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
             // more details, see the Navigation pattern on Android Design:
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailFragment.class){
-                navigateUpTo(new Intent(this, RecipeListActivity.class));
-            } else {
-                getSupportFragmentManager().popBackStack();
-            }
+
+            handleBackStack();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -83,9 +86,23 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
 
     @Override
     public void onStepSelected(int position) {
+        replaceStepFragment(position);
+    }
+
+    @Override
+    public void onPreviousSelected(int position) {
+        replaceStepFragment(--position);
+    }
+
+    @Override
+    public void onNextSelected(int position) {
+        replaceStepFragment(++position);
+    }
+
+    public void replaceStepFragment(int position){
         Bundle arguments = new Bundle();
         arguments.putParcelable(RecipeDetailStepFragment.ARG_STEP,mCurrentRecipe.getSteps().get(position));
-        arguments.putInt(RecipeDetailStepFragment.ARG_STEP_MAX,mCurrentRecipe.getSteps().size());
+        arguments.putInt(RecipeDetailStepFragment.ARG_STEP_MAX, mCurrentRecipe.getSteps().size()-1);
         RecipeDetailStepFragment stepFragment = new RecipeDetailStepFragment();
         stepFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
@@ -93,4 +110,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
                 .addToBackStack(null)
                 .commit();
     }
+
+    public void handleBackStack(){
+        if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailFragment.class){
+            navigateUpTo(new Intent(this, RecipeListActivity.class));
+        } else {
+            FragmentManager.BackStackEntry firstFragment = getSupportFragmentManager().getBackStackEntryAt(0);
+            getSupportFragmentManager().popBackStack(firstFragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
 }
