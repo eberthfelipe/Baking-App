@@ -14,7 +14,10 @@
         android:layout_margin="3dp"
         android:elevation="5dp"
         android:minHeight="@dimen/recipe_title_size"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:clickable="true"
+        android:foreground="@drawable/ripple_effect">
 
         <TextView
             android:id="@+id/tv_ingredient_list_content"

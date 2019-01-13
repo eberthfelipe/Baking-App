@@ -4,9 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/btn_next"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_default"
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="@drawable/ripple_effect">
 
-    <android.support.v7.widget.AppCompatImageButton
+    <ImageView
         android:id="@+id/img_btn_next"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
