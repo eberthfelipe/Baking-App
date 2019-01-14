@@ -44,44 +44,42 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
      * device.
      */
     private static final String TAG = RecipeListActivity.class.getName();
+    public static final String RECIPE_LIST = "recipe_list";
     private boolean mTwoPane;
     private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
+    private ArrayList<Recipe> mRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivityRecipeListBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
-
-        Toolbar toolbar = mActivityRecipeListBinding.toolbar;
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = mActivityRecipeListBinding.fab;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        //TODO: Replace findViewById for dataBinding
-        if (findViewById(R.id.recipe_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
+        init();
+        //TODO: Test this onSaveInstanceState
+        //TODO: implement onSaveInstanceState in other views
+        if(savedInstanceState == null || savedInstanceState.isEmpty()){
+            showProgress(true);
+            getRecipes();
         }
+    }
 
-        showProgress(true);
-//        setupRecyclerView((RecyclerView) recyclerView);
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(!savedInstanceState.isEmpty()){
+            mRecipes = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+            setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, mRecipes);
+        }
+    }
 
-        mRecipeListPresenter = new RecipeListPresenterImpl(this);
-        //TODO: restore saved instance to get recipes only when necessary
-        getRecipes();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(mActivityRecipeListBinding != null && mActivityRecipeListBinding.recipeListIncluded.recipeList != null){
+            if(mRecipes != null && !mRecipes.isEmpty()){
+                outState.putParcelableArrayList(RECIPE_LIST, mRecipes);
+                super.onSaveInstanceState(outState);
+            }
+        }
     }
 
     @Override
@@ -177,6 +175,24 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
     }
 
+    public void init(){
+        mActivityRecipeListBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
+        Toolbar toolbar = mActivityRecipeListBinding.toolbar;
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
+
+        //TODO: Replace findViewById for dataBinding
+        if (findViewById(R.id.recipe_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
+        mRecipeListPresenter = new RecipeListPresenterImpl(this);
+    }
+
     public void showProgress(boolean show){
         if(show){
             mActivityRecipeListBinding.recipeListIncluded.setShow(false);
@@ -198,7 +214,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
     @Override
     public void parseRecipes(ArrayList<Recipe> recipes) {
-        setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, recipes);
+        mRecipes = new ArrayList<>(recipes);
+        setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, mRecipes);
         showProgress(false);
     }
 
