@@ -35,6 +35,7 @@ import udacity.android.com.bakingapp.object.Step;
 
 public class RecipeDetailStepFragment extends Fragment {
 
+    public static final String CURRENT_STEP = "current_step";
     public static final String ARG_STEP = "step_object";
     public static final String ARG_STEP_MAX = "step_max_position";
     private static final String TAG = RecipeDetailStepFragment.class.getName();
@@ -70,10 +71,30 @@ public class RecipeDetailStepFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (hasValidArguments(getArguments())) {
-            mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
-            maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
-            mStepNavigationCallBack = (StepNavigationClickListener) getContext();
+        mStepNavigationCallBack = (StepNavigationClickListener) getContext();
+        if(savedInstanceState == null || savedInstanceState.isEmpty()){
+            if (hasValidArguments(getArguments())) {
+                mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
+                maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null && !savedInstanceState.isEmpty()){
+            mStep = savedInstanceState.getParcelable(CURRENT_STEP);
+            maxPositionStep = savedInstanceState.getInt(ARG_STEP_MAX);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if(mRecipeDetailStepBinding != null && mStep!=null){
+            outState.putParcelable(CURRENT_STEP, mStep);
+            outState.putInt(ARG_STEP_MAX, maxPositionStep);
+            super.onSaveInstanceState(outState);
         }
     }
 

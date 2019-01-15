@@ -1,14 +1,14 @@
 package udacity.android.com.bakingapp.view;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import java.util.Objects;
 
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
@@ -22,6 +22,8 @@ import udacity.android.com.bakingapp.object.Recipe;
  */
 public class RecipeDetailActivity extends AppCompatActivity implements StepClickListener, StepNavigationClickListener {
 
+    public static final String CURRENT_RECIPE = "current_recipe";
+    public static final String RECIPE_FRAGMENT = "recipe_fragment";
     private ActivityRecipeDetailBinding mActivityRecipeDetailBinding;
     private Recipe mCurrentRecipe;
 
@@ -40,16 +42,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || savedInstanceState.isEmpty()) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
@@ -64,8 +57,23 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
     }
 
     @Override
-    public void onBackPressed() {
-        handleBackStack();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(!savedInstanceState.isEmpty()){
+            mCurrentRecipe = savedInstanceState.getParcelable(CURRENT_RECIPE);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.recipe_detail_container, Objects.requireNonNull(getSupportFragmentManager().getFragment(savedInstanceState, RECIPE_FRAGMENT)))
+                    .commit();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(mActivityRecipeDetailBinding != null && mCurrentRecipe!= null){
+            outState.putParcelable(CURRENT_RECIPE, mCurrentRecipe);
+            getSupportFragmentManager().putFragment(outState, RECIPE_FRAGMENT, getSupportFragmentManager().getFragments().get(0));
+            super.onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -113,7 +121,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
 
     public void handleBackStack(){
         if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailFragment.class){
-            navigateUpTo(new Intent(this, RecipeListActivity.class));
+            onBackPressed();
         } else {
             FragmentManager.BackStackEntry firstFragment = getSupportFragmentManager().getBackStackEntryAt(0);
             getSupportFragmentManager().popBackStack(firstFragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);

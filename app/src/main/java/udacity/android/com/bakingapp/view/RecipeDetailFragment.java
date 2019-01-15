@@ -1,31 +1,15 @@
 package udacity.android.com.bakingapp.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -51,8 +35,7 @@ public class RecipeDetailFragment extends Fragment {
 
     private Recipe mRecipeItem;
     private RecipeDetailBinding mRecipeDetailBinding;
-    private int positionStep;
-
+    private CollapsingToolbarLayout mAppBarLayout;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -63,21 +46,37 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO: implement on restore instance to save position list
-        positionStep = 0;
 
-        if (getArguments() != null && getArguments().containsKey(ARG_RECIPE)) {
-
-            mRecipeItem = new Recipe((Recipe) Objects.requireNonNull(getArguments().getParcelable(ARG_RECIPE)));
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = null;
-            if (activity != null) {
-                appBarLayout = activity.findViewById(R.id.toolbar_layout);
+        Activity activity = this.getActivity();
+        if (activity != null) {
+            mAppBarLayout = activity.findViewById(R.id.toolbar_layout);
+        }
+        if (savedInstanceState == null || savedInstanceState.isEmpty()){
+            if(getArguments() != null && getArguments().containsKey(ARG_RECIPE)) {
+                mRecipeItem = new Recipe((Recipe) Objects.requireNonNull(getArguments().getParcelable(ARG_RECIPE)));
+                if (mAppBarLayout != null) {
+                    mAppBarLayout.setTitle(mRecipeItem.getName());
+                }
             }
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mRecipeItem.getName());
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null && !savedInstanceState.isEmpty()){
+            mRecipeItem = savedInstanceState.getParcelable(ARG_RECIPE);
+            if (mAppBarLayout != null && mRecipeItem != null) {
+                mAppBarLayout.setTitle(mRecipeItem.getName());
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if(mRecipeDetailBinding != null && mRecipeItem != null){
+            outState.putParcelable(ARG_RECIPE, mRecipeItem);
+            super.onSaveInstanceState(outState);
         }
     }
 

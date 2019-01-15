@@ -69,6 +69,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         if(!savedInstanceState.isEmpty()){
             mRecipes = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
             setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, mRecipes);
+            showProgress(false);
         }
     }
 
