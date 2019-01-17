@@ -77,16 +77,20 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
     }
 
     @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailStepFragment.class){
+            FragmentManager.BackStackEntry firstFragment = getSupportFragmentManager().getBackStackEntryAt(0);
+            getSupportFragmentManager().popBackStack(firstFragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-
-            handleBackStack();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -118,14 +122,4 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
                 .addToBackStack(null)
                 .commit();
     }
-
-    public void handleBackStack(){
-        if(getSupportFragmentManager().getFragments().get(0).getClass() == RecipeDetailFragment.class){
-            onBackPressed();
-        } else {
-            FragmentManager.BackStackEntry firstFragment = getSupportFragmentManager().getBackStackEntryAt(0);
-            getSupportFragmentManager().popBackStack(firstFragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-    }
-
 }
