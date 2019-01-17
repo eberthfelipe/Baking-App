@@ -53,7 +53,7 @@ public class Step implements Parcelable {
     }
 
     public String getFormattedShortDescription(){
-        return (id+1) + ". " + short_description;
+        return (id) + ". " + short_description;
     }
 
     //region GET and SET

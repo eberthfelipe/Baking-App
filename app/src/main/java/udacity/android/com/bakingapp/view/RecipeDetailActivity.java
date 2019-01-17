@@ -115,6 +115,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
         Bundle arguments = new Bundle();
         arguments.putParcelable(RecipeDetailStepFragment.ARG_STEP,mCurrentRecipe.getSteps().get(position));
         arguments.putInt(RecipeDetailStepFragment.ARG_STEP_MAX, mCurrentRecipe.getSteps().size()-1);
+        arguments.putInt(RecipeDetailStepFragment.ARG_STEP_POSITION, position);
         RecipeDetailStepFragment stepFragment = new RecipeDetailStepFragment();
         stepFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()

@@ -38,9 +38,11 @@ public class RecipeDetailStepFragment extends Fragment {
     public static final String CURRENT_STEP = "current_step";
     public static final String ARG_STEP = "step_object";
     public static final String ARG_STEP_MAX = "step_max_position";
+    public static final String ARG_STEP_POSITION = "step_current_position";
     private static final String TAG = RecipeDetailStepFragment.class.getName();
     private Step mStep;
     private RecipeDetailStepBinding mRecipeDetailStepBinding;
+    private int mPositionStep;
     private int maxPositionStep;
     private SimpleExoPlayer mPlayer;
     private int mPlayerCurrentWindow = 0;
@@ -54,11 +56,11 @@ public class RecipeDetailStepFragment extends Fragment {
             switch (view.getId()){
                 case R.id.id_previous_button:
                     Log.d(TAG, "PREVIOUS");
-                    mStepNavigationCallBack.onPreviousSelected(mStep.getId());
+                    mStepNavigationCallBack.onPreviousSelected(mPositionStep);
                     break;
                 case R.id.id_next_button:
                     Log.d(TAG, "NEXT");
-                    mStepNavigationCallBack.onNextSelected(mStep.getId());
+                    mStepNavigationCallBack.onNextSelected(mPositionStep);
                     break;
             }
 //            mStepCallBack.onStepSelected(position);
@@ -76,6 +78,7 @@ public class RecipeDetailStepFragment extends Fragment {
             if (hasValidArguments(getArguments())) {
                 mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
                 maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
+                mPositionStep = getArguments().getInt(ARG_STEP_POSITION);
             }
         }
     }
