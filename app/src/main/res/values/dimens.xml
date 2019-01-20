@@ -9,4 +9,5 @@
     <dimen name="ingredients_title">18sp</dimen>
     <dimen name="margin_default">8dp</dimen>
     <dimen name="exoplayer_height">250dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

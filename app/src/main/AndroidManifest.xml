@@ -24,14 +24,28 @@
         </activity>
         <activity
             android:name=".view.RecipeDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_recipe_detail"
             android:parentActivityName=".view.RecipeListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="udacity.android.com.bakingapp.view.RecipeListActivity" />
         </activity>
+
+        <receiver android:name=".widget.BakingWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="udacity.android.com.bakingapp.recipe.ingredients" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_widget_info" />
+        </receiver>
+        <service android:name=".widget.BakingWidgetService"
+            android:permission="android.permissions.BIND_REMOTEVIEWS"
+            />
     </application>
 
 </manifest>

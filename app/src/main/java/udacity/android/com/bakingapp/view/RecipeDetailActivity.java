@@ -1,5 +1,7 @@
 package udacity.android.com.bakingapp.view;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -8,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
+import udacity.android.com.bakingapp.object.Ingredient;
+import udacity.android.com.bakingapp.widget.BakingWidget;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
 import udacity.android.com.bakingapp.object.Recipe;
@@ -53,6 +58,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
+
+            updateWidget(this, mCurrentRecipe.toString(), (ArrayList<Ingredient>) mCurrentRecipe.getIngredients());
         }
     }
 
@@ -122,5 +129,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
                 .replace(R.id.recipe_detail_container, stepFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void updateWidget(Context context, String recipeIngredients, ArrayList<Ingredient> ingredients){
+        Intent intent = new Intent(context, BakingWidget.class);
+        intent.setAction(BakingWidget.BAKING_WIDGET_UPDATE);
+        if(recipeIngredients != null){
+            intent.putExtra(BakingWidget.BAKING_WIDGET_RECIPE_INGREDIENTS, recipeIngredients);
+            intent.putParcelableArrayListExtra(BakingWidget.BAKING_WIDGET_RECIPE_INGREDIENTS_LIST, ingredients);
+        }
+        context.sendBroadcast(intent);
     }
 }
