@@ -6,49 +6,33 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.object.Ingredient;
+import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.presenter.RecipePreferenceImpl;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class BakingWidget extends AppWidgetProvider {
 
-    public static final String BAKING_WIDGET_UPDATE = "udacity.android.com.bakingapp.recipe.ingredients";
-    public static final String BAKING_WIDGET_RECIPE_INGREDIENTS = "recipe_ingredients";
+    public static final String BAKING_WIDGET_UPDATE = "udacity.android.com.bakingapp.widget.UPDATE";
     public static final String BAKING_WIDGET_RECIPE_INGREDIENTS_LIST = "recipe_ingredients_list";
-    private static ArrayList<Ingredient> mIngredientValuesWidget;
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
-        Intent intent = new Intent(context, BakingWidgetService.class);
-        intent.putParcelableArrayListExtra(BAKING_WIDGET_RECIPE_INGREDIENTS_LIST, mIngredientValuesWidget);
-        views.setRemoteAdapter(R.id.appwidget_list, intent);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.appwidget_list);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Intent intent;
-        RemoteViews remoteViews;
-        // There may be multiple widgets active, so update all of them
+        RemoteViews views;
         for (int appWidgetId : appWidgetIds) {
-            remoteViews = new RemoteViews(context.getPackageName(),R.layout.widget_list_item);
-            intent = new Intent(context, BakingWidgetService.class);
-            intent.putParcelableArrayListExtra(BAKING_WIDGET_RECIPE_INGREDIENTS_LIST, mIngredientValuesWidget);
-            remoteViews.setRemoteAdapter(R.id.appwidget_list, intent);
-
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            // Construct the RemoteViews object
+            views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            Toast.makeText(context, "onUpdate WIDGET", Toast.LENGTH_SHORT).show();
         }
-//        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -63,12 +47,39 @@ public class BakingWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mIngredientValuesWidget = intent.hasExtra(BAKING_WIDGET_RECIPE_INGREDIENTS_LIST)
-                ? intent.<Ingredient>getParcelableArrayListExtra(BAKING_WIDGET_RECIPE_INGREDIENTS_LIST)
-                : null;
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] views = appWidgetManager.getAppWidgetIds(new ComponentName(context, BakingWidget.class));
-        this.onUpdate(context, appWidgetManager, views);
+        super.onReceive(context, intent);
+        if(BAKING_WIDGET_UPDATE.equals(intent.getAction())){
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), BakingWidget.class.getName());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+            Toast.makeText(context, "onRECEIVE WIDGET", Toast.LENGTH_SHORT).show();
+
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_list);
+            for (int appWidgetId: appWidgetIds) {
+                updateWidget(context, appWidgetManager, appWidgetId);
+            }
+        }
+    }
+
+    // Reference: https://github.com/djkovrik/BakingApp
+    public void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId){
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
+        views.removeAllViews(R.id.appwidget_list);
+        RemoteViews ingredientView;
+
+        RecipePreferenceImpl recipePreference = new RecipePreferenceImpl();
+        Recipe recipe =  recipePreference.getRecipeSaved(context);
+        if(recipe != null){
+            views.setTextViewText(R.id.widget_tv_recipe_name, recipe.getName());
+            for (Ingredient ingredient: recipe.getIngredients()) {
+                ingredientView = new RemoteViews(context.getPackageName(),
+                        R.layout.widget_list_item);
+
+                ingredientView.setTextViewText(R.id.widget_tv_ingredient_list_content, ingredient.toString());
+                views.addView(R.id.appwidget_list, ingredientView);
+            }
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
     }
 
 }

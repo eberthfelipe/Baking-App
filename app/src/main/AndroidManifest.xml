@@ -36,16 +36,12 @@
         <receiver android:name=".widget.BakingWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="udacity.android.com.bakingapp.recipe.ingredients" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/baking_widget_info" />
         </receiver>
-        <service android:name=".widget.BakingWidgetService"
-            android:permission="android.permissions.BIND_REMOTEVIEWS"
-            />
     </application>
 
 </manifest>

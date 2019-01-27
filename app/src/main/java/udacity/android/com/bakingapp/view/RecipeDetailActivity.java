@@ -10,14 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-import udacity.android.com.bakingapp.object.Ingredient;
-import udacity.android.com.bakingapp.widget.BakingWidget;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeDetailBinding;
 import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.presenter.RecipePreferenceImpl;
+import udacity.android.com.bakingapp.widget.BakingWidget;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -50,8 +49,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
         if (savedInstanceState == null || savedInstanceState.isEmpty()) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+            Bundle bundleReceived = getIntent().getBundleExtra(RecipeDetailFragment.ARG_RECIPE);
+            mCurrentRecipe = bundleReceived.getParcelable(RecipeDetailFragment.ARG_RECIPE);
             Bundle arguments = new Bundle();
-            mCurrentRecipe = getIntent().getParcelableExtra(RecipeDetailFragment.ARG_RECIPE);
             arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, mCurrentRecipe);
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
@@ -59,7 +59,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
 
-            updateWidget(this, mCurrentRecipe.toString(), (ArrayList<Ingredient>) mCurrentRecipe.getIngredients());
+            updateWidget(this, mCurrentRecipe.toString(), mCurrentRecipe);
         }
     }
 
@@ -131,12 +131,12 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
                 .commit();
     }
 
-    public void updateWidget(Context context, String recipeIngredients, ArrayList<Ingredient> ingredients){
+    public void updateWidget(Context context, String recipeIngredients, Recipe recipe){
         Intent intent = new Intent(context, BakingWidget.class);
         intent.setAction(BakingWidget.BAKING_WIDGET_UPDATE);
         if(recipeIngredients != null){
-            intent.putExtra(BakingWidget.BAKING_WIDGET_RECIPE_INGREDIENTS, recipeIngredients);
-            intent.putParcelableArrayListExtra(BakingWidget.BAKING_WIDGET_RECIPE_INGREDIENTS_LIST, ingredients);
+            RecipePreferenceImpl recipePreference = new RecipePreferenceImpl();
+            recipePreference.saveRecipe(context, recipe);
         }
         context.sendBroadcast(intent);
     }
