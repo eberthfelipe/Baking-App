@@ -6,9 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.object.Ingredient;
@@ -30,7 +27,6 @@ public class BakingWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
             appWidgetManager.updateAppWidget(appWidgetId, views);
-            Toast.makeText(context, "onUpdate WIDGET", Toast.LENGTH_SHORT).show();
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
@@ -52,7 +48,6 @@ public class BakingWidget extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), BakingWidget.class.getName());
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            Toast.makeText(context, "onRECEIVE WIDGET", Toast.LENGTH_SHORT).show();
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_list);
             for (int appWidgetId: appWidgetIds) {

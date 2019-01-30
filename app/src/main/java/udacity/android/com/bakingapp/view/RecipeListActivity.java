@@ -37,7 +37,7 @@ import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends AppCompatActivity implements RecipeView{
+public class RecipeListActivity extends BakingActivity implements RecipeView{
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -111,22 +111,25 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
             @Override
             public void onClick(View view) {
                 int position = (int) view.getTag();
+                Context context = view.getContext();
                 Recipe recipe = mRecipeValues.get(position);
                 Log.d(TAG, "onClick Recipe: " + recipe.toString());
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, recipe);
                 if (mTwoPane) {
+                    mParentActivity.setCurrentRecipe(recipe);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)
                             .commit();
                 } else {
-                    Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
                     intent.putExtra(RecipeDetailFragment.ARG_RECIPE, arguments);
                     context.startActivity(intent);
                 }
+
+                mParentActivity.updateWidget(context);
             }
         };
 
