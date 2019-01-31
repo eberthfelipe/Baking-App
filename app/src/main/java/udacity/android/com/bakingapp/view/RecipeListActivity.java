@@ -4,15 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,10 +23,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import udacity.android.com.bakingapp.BR;
-import udacity.android.com.bakingapp.object.Recipe;
-import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
+import udacity.android.com.bakingapp.object.Recipe;
+import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -45,6 +44,8 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
      */
     private static final String TAG = RecipeListActivity.class.getName();
     public static final String RECIPE_LIST = "recipe_list";
+    public static final String RECIPE_TWO_PANE = "recipe_two_pane";
+    public static final String CONFIGURATION_CHANGE_PORT_TO_LAND = "config_change";
     private boolean mTwoPane;
     private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
@@ -70,6 +71,14 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
             mRecipes = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
             setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, mRecipes);
             showProgress(false);
+            mTwoPane = savedInstanceState.getBoolean(RECIPE_TWO_PANE);
+            boolean configChange = savedInstanceState.getBoolean(CONFIGURATION_CHANGE_PORT_TO_LAND);
+            int orientation = getResources().getConfiguration().orientation;
+            if(orientation == Configuration.ORIENTATION_LANDSCAPE
+                    && mTwoPane
+                    && configChange) {
+                removeFragment();
+            }
         }
     }
 
@@ -78,6 +87,10 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
         if(mActivityRecipeListBinding != null && mActivityRecipeListBinding.recipeListIncluded.recipeList != null){
             if(mRecipes != null && !mRecipes.isEmpty()){
                 outState.putParcelableArrayList(RECIPE_LIST, mRecipes);
+                outState.putBoolean(RECIPE_TWO_PANE, mTwoPane);
+                int orientation = getResources().getConfiguration().orientation;
+                if(orientation == Configuration.ORIENTATION_PORTRAIT)
+                    outState.putBoolean(CONFIGURATION_CHANGE_PORT_TO_LAND, true);
                 super.onSaveInstanceState(outState);
             }
         }
@@ -210,6 +223,12 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
             mRecipeListPresenter.retrieveRecipesFromServer(this);
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, MY_PERMISSIONS_INTERNET);
+        }
+    }
+
+    private void removeFragment() {
+        if(!getSupportFragmentManager().getFragments().isEmpty()){
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
