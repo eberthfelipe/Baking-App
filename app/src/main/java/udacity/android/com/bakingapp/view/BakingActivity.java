@@ -3,6 +3,7 @@ package udacity.android.com.bakingapp.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -69,6 +70,14 @@ public class BakingActivity extends AppCompatActivity implements StepClickListen
             getSupportFragmentManager().popBackStack(firstFragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    public void removeFragments() {
+        if(!getSupportFragmentManager().getFragments().isEmpty()){
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
         }
     }
 }

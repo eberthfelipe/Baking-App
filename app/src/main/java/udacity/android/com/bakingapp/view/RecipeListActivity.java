@@ -10,7 +10,6 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -56,8 +55,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-        //TODO: Test this onSaveInstanceState
-        //TODO: implement onSaveInstanceState in other views
         if(savedInstanceState == null || savedInstanceState.isEmpty()){
             showProgress(true);
             getRecipes();
@@ -77,7 +74,7 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
             if(orientation == Configuration.ORIENTATION_LANDSCAPE
                     && mTwoPane
                     && configChange) {
-                removeFragment();
+                removeFragments();
             }
         }
     }
@@ -126,11 +123,15 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
                 int position = (int) view.getTag();
                 Context context = view.getContext();
                 Recipe recipe = mRecipeValues.get(position);
+                mParentActivity.setCurrentRecipe(recipe);
                 Log.d(TAG, "onClick Recipe: " + recipe.toString());
+
+                mParentActivity.updateWidget(context);
+
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, recipe);
+                arguments.putBoolean(RECIPE_TWO_PANE, mTwoPane);
                 if (mTwoPane) {
-                    mParentActivity.setCurrentRecipe(recipe);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -141,8 +142,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
                     intent.putExtra(RecipeDetailFragment.ARG_RECIPE, arguments);
                     context.startActivity(intent);
                 }
-
-                mParentActivity.updateWidget(context);
             }
         };
 
@@ -223,12 +222,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
             mRecipeListPresenter.retrieveRecipesFromServer(this);
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, MY_PERMISSIONS_INTERNET);
-        }
-    }
-
-    private void removeFragment() {
-        if(!getSupportFragmentManager().getFragments().isEmpty()){
-            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

@@ -1,8 +1,8 @@
 package udacity.android.com.bakingapp.view;
 
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -28,7 +28,16 @@ public class RecipeDetailActivity extends BakingActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Bundle bundleReceived = getIntent().getBundleExtra(RecipeDetailFragment.ARG_RECIPE);
+        boolean twoPane = bundleReceived.getBoolean(RecipeListActivity.RECIPE_TWO_PANE);
+        int orientation = getResources().getConfiguration().orientation;
+        //TODO validate in fragments
+        //For testing change validation below to:
+        //if(!twoPane && orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if(twoPane && orientation == Configuration.ORIENTATION_LANDSCAPE){
+            finish();
+//            removeFragments();
+        }
         mActivityRecipeDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_detail);
 
         Toolbar toolbar = mActivityRecipeDetailBinding.detailToolbar;
@@ -43,7 +52,6 @@ public class RecipeDetailActivity extends BakingActivity {
         if (savedInstanceState == null || savedInstanceState.isEmpty()) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle bundleReceived = getIntent().getBundleExtra(RecipeDetailFragment.ARG_RECIPE);
             setCurrentRecipe((Recipe) bundleReceived.getParcelable(RecipeDetailFragment.ARG_RECIPE));
             Bundle arguments = new Bundle();
             arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, getCurrentRecipe());
