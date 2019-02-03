@@ -49,23 +49,8 @@ public class RecipeDetailStepFragment extends Fragment {
     private long mPlayerPosition = 0;
     private boolean mPlayerWhenReady = true;
     private StepNavigationClickListener mStepNavigationCallBack;
-
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.id_previous_button:
-                    Log.d(TAG, "PREVIOUS");
-                    mStepNavigationCallBack.onPreviousSelected(mPositionStep);
-                    break;
-                case R.id.id_next_button:
-                    Log.d(TAG, "NEXT");
-                    mStepNavigationCallBack.onNextSelected(mPositionStep);
-                    break;
-            }
-//            mStepCallBack.onStepSelected(position);
-        }
-    };
+    private boolean mTwoPane;
+    private View.OnClickListener mOnClickListener;
 
     public RecipeDetailStepFragment() {
     }
@@ -79,6 +64,7 @@ public class RecipeDetailStepFragment extends Fragment {
                 mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
                 maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
                 mPositionStep = getArguments().getInt(ARG_STEP_POSITION);
+                mTwoPane = getArguments().getBoolean(RecipeDetailActivity.RECIPE_DETAIL_TWO_PANE);
             }
         }
     }
@@ -97,6 +83,7 @@ public class RecipeDetailStepFragment extends Fragment {
         if(mRecipeDetailStepBinding != null && mStep!=null){
             outState.putParcelable(CURRENT_STEP, mStep);
             outState.putInt(ARG_STEP_MAX, maxPositionStep);
+            outState.putBoolean(RecipeDetailActivity.RECIPE_DETAIL_TWO_PANE, mTwoPane);
             super.onSaveInstanceState(outState);
         }
     }
@@ -115,8 +102,13 @@ public class RecipeDetailStepFragment extends Fragment {
         if(mStep != null){
             Log.d(TAG, "onCreateView: " + mStep.toString());
             mRecipeDetailStepBinding.setStepDescription(mStep.getDescription());
-            mRecipeDetailStepBinding.idPreviousButton.setOnClickListener(mOnClickListener);
-            mRecipeDetailStepBinding.idNextButton.setOnClickListener(mOnClickListener);
+            if(mTwoPane){
+                mRecipeDetailStepBinding.clStepNavigation.setVisibility(View.GONE);
+            } else {
+                mOnClickListener = getOnClickListener();
+                mRecipeDetailStepBinding.idPreviousButton.setOnClickListener(mOnClickListener);
+                mRecipeDetailStepBinding.idNextButton.setOnClickListener(mOnClickListener);
+            }
             validateNavigation();
             mRecipeDetailStepBinding.setHasVideo(mStep.hasVideo());
             if(mStep.hasVideo()){
@@ -143,6 +135,24 @@ public class RecipeDetailStepFragment extends Fragment {
             mRecipeDetailStepBinding.idPreviousButton.setEnabled(true);
             mRecipeDetailStepBinding.idNextButton.setEnabled(true);
         }
+    }
+
+    private View.OnClickListener getOnClickListener(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.id_previous_button:
+                        Log.d(TAG, "PREVIOUS");
+                        mStepNavigationCallBack.onPreviousSelected(mPositionStep);
+                        break;
+                    case R.id.id_next_button:
+                        Log.d(TAG, "NEXT");
+                        mStepNavigationCallBack.onNextSelected(mPositionStep);
+                        break;
+                }
+            }
+        };
     }
 
     //region ExoPlayer

@@ -4,13 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +26,8 @@ import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
 import udacity.android.com.bakingapp.object.Recipe;
 import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
+import udacity.android.com.bakingapp.presenter.RecipePreferenceImpl;
+import udacity.android.com.bakingapp.widget.BakingWidget;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -35,7 +37,7 @@ import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends BakingActivity implements RecipeView{
+public class RecipeListActivity extends AppCompatActivity implements RecipeView{
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -43,9 +45,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
      */
     private static final String TAG = RecipeListActivity.class.getName();
     public static final String RECIPE_LIST = "recipe_list";
-    public static final String RECIPE_TWO_PANE = "recipe_two_pane";
-    public static final String CONFIGURATION_CHANGE_PORT_TO_LAND = "config_change";
-    private boolean mTwoPane;
     private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
@@ -68,14 +67,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
             mRecipes = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
             setupRecyclerView(mActivityRecipeListBinding.recipeListIncluded.recipeList, mRecipes);
             showProgress(false);
-            mTwoPane = savedInstanceState.getBoolean(RECIPE_TWO_PANE);
-            boolean configChange = savedInstanceState.getBoolean(CONFIGURATION_CHANGE_PORT_TO_LAND);
-            int orientation = getResources().getConfiguration().orientation;
-            if(orientation == Configuration.ORIENTATION_LANDSCAPE
-                    && mTwoPane
-                    && configChange) {
-                removeFragments();
-            }
         }
     }
 
@@ -84,10 +75,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
         if(mActivityRecipeListBinding != null && mActivityRecipeListBinding.recipeListIncluded.recipeList != null){
             if(mRecipes != null && !mRecipes.isEmpty()){
                 outState.putParcelableArrayList(RECIPE_LIST, mRecipes);
-                outState.putBoolean(RECIPE_TWO_PANE, mTwoPane);
-                int orientation = getResources().getConfiguration().orientation;
-                if(orientation == Configuration.ORIENTATION_PORTRAIT)
-                    outState.putBoolean(CONFIGURATION_CHANGE_PORT_TO_LAND, true);
                 super.onSaveInstanceState(outState);
             }
         }
@@ -108,7 +95,7 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, ArrayList<Recipe> recipes) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, recipes, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, recipes));
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -116,48 +103,33 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
 
         private final RecipeListActivity mParentActivity;
         private final ArrayList<Recipe> mRecipeValues;
-        private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = (int) view.getTag();
                 Context context = view.getContext();
                 Recipe recipe = mRecipeValues.get(position);
-                mParentActivity.setCurrentRecipe(recipe);
                 Log.d(TAG, "onClick Recipe: " + recipe.toString());
 
-                mParentActivity.updateWidget(context);
+                mParentActivity.updateWidget(context, recipe);
 
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(RecipeDetailFragment.ARG_RECIPE, recipe);
-                arguments.putBoolean(RECIPE_TWO_PANE, mTwoPane);
-                if (mTwoPane) {
-                    RecipeDetailFragment fragment = new RecipeDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.recipe_detail_container, fragment)
-                            .commit();
-                } else {
-                    Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_RECIPE, arguments);
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent(context, RecipeDetailActivity.class);
+                intent.putExtra(RecipeDetailFragment.ARG_RECIPE, arguments);
+                context.startActivity(intent);
             }
         };
 
         SimpleItemRecyclerViewAdapter(RecipeListActivity parent,
-                                      ArrayList<Recipe> recipeItems,
-                                      boolean twoPane) {
+                                      ArrayList<Recipe> recipeItems) {
             mRecipeValues = recipeItems;
             mParentActivity = parent;
-            mTwoPane = twoPane;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.recipe_list_content, parent, false);
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
             ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.recipe_list_content, parent, false);
             return new ViewHolder(viewDataBinding);
@@ -196,15 +168,6 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        //TODO: Replace findViewById for dataBinding
-        if (findViewById(R.id.recipe_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
-
         mRecipeListPresenter = new RecipeListPresenterImpl(this);
     }
 
@@ -223,6 +186,16 @@ public class RecipeListActivity extends BakingActivity implements RecipeView{
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.INTERNET}, MY_PERMISSIONS_INTERNET);
         }
+    }
+
+    public void updateWidget(Context context, Recipe recipe){
+        Intent intent = new Intent(context, BakingWidget.class);
+        intent.setAction(BakingWidget.BAKING_WIDGET_UPDATE);
+        if(recipe != null){
+            RecipePreferenceImpl recipePreference = new RecipePreferenceImpl();
+            recipePreference.saveRecipe(context, recipe);
+        }
+        context.sendBroadcast(intent);
     }
 
     //region RecipeView Interface

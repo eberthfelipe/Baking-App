@@ -32,7 +32,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="udacity.android.com.bakingapp.view.RecipeListActivity" />
         </activity>
-        <activity android:name=".view.BakingActivity" />
 
         <receiver android:name=".widget.BakingWidget">
             <intent-filter>
