@@ -21,10 +21,11 @@ public class RecipeListPresenterImpl implements RecipeListPresenter {
     @Override
     public void retrieveRecipesFromServer(Context context) {
         if(NetworkUtils.checkInternetConnection(context)){
+            mRecipeView.showNoInternetConnection(false);
             Call<Recipe []> recipeCall = new RetrofitConfig().getBakingService().getRecipes();
             recipeCall.enqueue(NetworkUtils.retrieveRecipes(this));
         } else {
-            // TODO: implement no internet connection
+            mRecipeView.showNoInternetConnection(true);
         }
     }
 

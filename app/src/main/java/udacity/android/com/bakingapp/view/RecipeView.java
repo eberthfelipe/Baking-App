@@ -7,4 +7,5 @@ import udacity.android.com.bakingapp.object.Recipe;
 public interface RecipeView {
 
     void parseRecipes(ArrayList<Recipe> recipes);
+    void showNoInternetConnection(boolean show);
 }

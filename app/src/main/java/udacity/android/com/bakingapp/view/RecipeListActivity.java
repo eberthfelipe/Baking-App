@@ -207,5 +207,10 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         showProgress(false);
     }
 
+    @Override
+    public void showNoInternetConnection(boolean show) {
+        mActivityRecipeListBinding.setNoInternet(show);
+    }
+
     //endregion
 }
