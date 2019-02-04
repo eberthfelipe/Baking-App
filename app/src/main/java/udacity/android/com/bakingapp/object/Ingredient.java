@@ -11,7 +11,7 @@ import udacity.android.com.bakingapp.utils.BakingJsonUtils;
 // Ingredient of Recipe
 public class Ingredient implements Parcelable {
 
-    private static String TAG = Ingredient.class.getName();
+    private static final String TAG = Ingredient.class.getName();
 
     @JsonProperty(BakingJsonUtils.JSON_INGREDIENTS_QUANTITY)
     private int quantity;

@@ -44,7 +44,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
      * device.
      */
     private static final String TAG = RecipeListActivity.class.getName();
-    public static final String RECIPE_LIST = "recipe_list";
+    private static final String RECIPE_LIST = "recipe_list";
     private ActivityRecipeListBinding mActivityRecipeListBinding;
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
@@ -162,7 +162,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
     }
 
-    public void init(){
+    private void init(){
         mActivityRecipeListBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
         Toolbar toolbar = mActivityRecipeListBinding.toolbar;
         setSupportActionBar(toolbar);
@@ -171,7 +171,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         mRecipeListPresenter = new RecipeListPresenterImpl(this);
     }
 
-    public void showProgress(boolean show){
+    private void showProgress(boolean show){
         if(show){
             mActivityRecipeListBinding.recipeListIncluded.setShow(false);
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(true);
@@ -180,7 +180,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(false);
         }
     }
-    public void getRecipes(){
+    private void getRecipes(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
             mRecipeListPresenter.retrieveRecipesFromServer(this);
         } else {
@@ -188,7 +188,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         }
     }
 
-    public void updateWidget(Context context, Recipe recipe){
+    private void updateWidget(Context context, Recipe recipe){
         Intent intent = new Intent(context, BakingWidget.class);
         intent.setAction(BakingWidget.BAKING_WIDGET_UPDATE);
         if(recipe != null){

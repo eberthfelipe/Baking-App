@@ -35,7 +35,7 @@ import udacity.android.com.bakingapp.object.Step;
 
 public class RecipeDetailStepFragment extends Fragment {
 
-    public static final String CURRENT_STEP = "current_step";
+    private static final String CURRENT_STEP = "current_step";
     public static final String ARG_STEP = "step_object";
     public static final String ARG_STEP_MAX = "step_max_position";
     public static final String ARG_STEP_POSITION = "step_current_position";
@@ -50,7 +50,6 @@ public class RecipeDetailStepFragment extends Fragment {
     private boolean mPlayerWhenReady = true;
     private StepNavigationClickListener mStepNavigationCallBack;
     private boolean mTwoPane;
-    private View.OnClickListener mOnClickListener;
 
     public RecipeDetailStepFragment() {
     }
@@ -61,6 +60,7 @@ public class RecipeDetailStepFragment extends Fragment {
         mStepNavigationCallBack = (StepNavigationClickListener) getContext();
         if(savedInstanceState == null || savedInstanceState.isEmpty()){
             if (hasValidArguments(getArguments())) {
+                assert getArguments() != null;
                 mStep = new Step((Step) Objects.requireNonNull(getArguments().getParcelable(ARG_STEP)));
                 maxPositionStep = getArguments().getInt(ARG_STEP_MAX);
                 mPositionStep = getArguments().getInt(ARG_STEP_POSITION);
@@ -105,7 +105,7 @@ public class RecipeDetailStepFragment extends Fragment {
             if(mTwoPane){
                 mRecipeDetailStepBinding.clStepNavigation.setVisibility(View.GONE);
             } else {
-                mOnClickListener = getOnClickListener();
+                View.OnClickListener mOnClickListener = getOnClickListener();
                 mRecipeDetailStepBinding.idPreviousButton.setOnClickListener(mOnClickListener);
                 mRecipeDetailStepBinding.idNextButton.setOnClickListener(mOnClickListener);
             }
@@ -118,13 +118,13 @@ public class RecipeDetailStepFragment extends Fragment {
         return mRecipeDetailStepBinding.getRoot();
     }
 
-    public boolean hasValidArguments(Bundle args){
+    private boolean hasValidArguments(Bundle args){
         return args != null
                 && args.containsKey(ARG_STEP)
                 && args.containsKey(ARG_STEP_MAX);
     }
 
-    public void validateNavigation(){
+    private void validateNavigation(){
         if(mStep.getId() == 0){
             mRecipeDetailStepBinding.idPreviousButton.setEnabled(false);
             mRecipeDetailStepBinding.idPreviousButton.setAlpha((float) 0.30);

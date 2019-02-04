@@ -43,7 +43,7 @@ public class RecipeDetailIngredientRecyclerView extends RecyclerView.Adapter<Rec
     public static class RecipeDetailIngredientAdapter extends RecyclerView.ViewHolder{
         ViewDataBinding viewDataBinding;
 
-        public RecipeDetailIngredientAdapter(ViewDataBinding viewDataBinding) {
+        RecipeDetailIngredientAdapter(ViewDataBinding viewDataBinding) {
             super(viewDataBinding.getRoot());
             this.viewDataBinding = viewDataBinding;
         }

@@ -22,8 +22,8 @@ import udacity.android.com.bakingapp.object.Recipe;
  */
 public class RecipeDetailActivity extends AppCompatActivity implements StepClickListener, StepNavigationClickListener {
 
-    public static final String CURRENT_RECIPE = "current_recipe";
-    public static final String RECIPE_FRAGMENT = "recipe_fragment";
+    private static final String CURRENT_RECIPE = "current_recipe";
+    private static final String RECIPE_FRAGMENT = "recipe_fragment";
     public static final String RECIPE_DETAIL_TWO_PANE = "recipe_detail_two_pane";
     private ActivityRecipeDetailBinding mActivityRecipeDetailBinding;
     private Recipe mCurrentRecipe;
@@ -122,7 +122,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepClick
         replaceStepFragment(++position);
     }
 
-    public void replaceStepFragment(int position){
+    private void replaceStepFragment(int position){
         Bundle arguments = new Bundle();
         arguments.putParcelable(RecipeDetailStepFragment.ARG_STEP,mCurrentRecipe.getSteps().get(position));
         arguments.putInt(RecipeDetailStepFragment.ARG_STEP_MAX, mCurrentRecipe.getSteps().size()-1);
