@@ -8,6 +8,9 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import udacity.android.com.bakingapp.BR;
 import udacity.android.com.bakingapp.R;
 import udacity.android.com.bakingapp.databinding.ActivityRecipeListBinding;
+import udacity.android.com.bakingapp.idlingResource.LoadingRecipesResource;
 import udacity.android.com.bakingapp.object.Recipe;
 import udacity.android.com.bakingapp.presenter.RecipeListPresenterImpl;
 import udacity.android.com.bakingapp.presenter.RecipePreferenceImpl;
@@ -49,6 +53,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
     private final int MY_PERMISSIONS_INTERNET = 0;
     private RecipeListPresenterImpl mRecipeListPresenter;
     private ArrayList<Recipe> mRecipes;
+
+    //Testing variable
+    @Nullable private LoadingRecipesResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,9 +182,11 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
         if(show){
             mActivityRecipeListBinding.recipeListIncluded.setShow(false);
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(true);
+            getLoadingRecipesResource().setIdleState(false);
         } else {
             mActivityRecipeListBinding.recipeListIncluded.setShow(true);
             mActivityRecipeListBinding.recipeListIncluded.viewLoadingRecipesIncluded.setShow(false);
+            getLoadingRecipesResource().setIdleState(true);
         }
     }
     private void getRecipes(){
@@ -213,4 +222,18 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeView{
     }
 
     //endregion
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        return getLoadingRecipesResource();
+    }
+
+    @VisibleForTesting
+    private LoadingRecipesResource getLoadingRecipesResource(){
+        if (mIdlingResource == null) {
+            mIdlingResource = new LoadingRecipesResource();
+        }
+        return mIdlingResource;
+    }
 }
