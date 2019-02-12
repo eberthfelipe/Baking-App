@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_margin">
+
+    <TextView android:id="@+id/widget_tv_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/margin_default_widget"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/empty" />
+    <LinearLayout
+        android:id="@+id/appwidget_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        />
+
+</LinearLayout>
+    <!--Reference: https://github.com/djkovrik/BakingApp-->
