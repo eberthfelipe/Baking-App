@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import udacity.android.com.bakingapp.utils.NetworkUtils;
 import udacity.android.com.bakingapp.view.RecipeListActivity;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -47,14 +48,18 @@ public class RecipeListActivityTest {
 
     @Test
     public void clickItemRecipeList(){
-        onView(withId(R.id.no_internet_view)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.recipe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        if(NetworkUtils.checkInternetConnection(mRecipeListActivity.getActivity().getApplicationContext())){
+            onView(withId(R.id.no_internet_view)).check(matches(not(isDisplayed())));
+            onView(withId(R.id.recipe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
-        // Checks that the OrderActivity opens with the correct tea name displayed
-        onView(allOf(isAssignableFrom(Toolbar.class),withParent(isAssignableFrom(CollapsingToolbarLayout.class))))
-                .check(matches(withId(R.id.detail_toolbar)));
-        onView(isAssignableFrom(CollapsingToolbarLayout.class)).
-                check(matches(withCollapsibleToolbarTitle(is(RECIPE_NAME))));
+            onView(allOf(isAssignableFrom(Toolbar.class),withParent(isAssignableFrom(CollapsingToolbarLayout.class))))
+                    .check(matches(withId(R.id.detail_toolbar)));
+            onView(isAssignableFrom(CollapsingToolbarLayout.class)).
+                    check(matches(withCollapsibleToolbarTitle(is(RECIPE_NAME))));
+        } else {
+            onView(withId(R.id.no_internet_view)).check(matches(isDisplayed()));
+            onView(withId(R.id.recipe_list)).check(matches(not(isDisplayed())));
+        }
     }
 
     @After
